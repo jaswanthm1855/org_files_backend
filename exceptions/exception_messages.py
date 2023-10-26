@@ -13,3 +13,9 @@ FILE_ALREADY_EXISTS = (
     enums.StatusType.ERROR.value,
     "File already exists"
 )
+
+UNABLE_TO_PROCESS_FILE = (
+    status.HTTP_400_BAD_REQUEST,
+    enums.StatusType.ERROR.value,
+    "Unable to process file"
+)

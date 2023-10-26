@@ -2,12 +2,14 @@ import os.path
 import shutil
 from typing import List
 
+from fastapi import UploadFile
 from sqlalchemy.orm import Session
 
 import models
 from constants.plain_constants import UPLOAD_DIR_BASE_PATH
 from exceptions.custom_exceptions import CustomException
-from exceptions.exception_messages import ORGANISATION_DOES_NOT_EXISTS_EXCEPTION, FILE_ALREADY_EXISTS
+from exceptions.exception_messages import ORGANISATION_DOES_NOT_EXISTS_EXCEPTION, FILE_ALREADY_EXISTS, \
+    UNABLE_TO_PROCESS_FILE
 from org_files import schemas
 from utils.get_random_id_string import get_random_uuid_string_for_primary_key
 
@@ -36,7 +38,7 @@ def upload_file(request_schema: schemas.UploadFileRequestSchema, db: Session) ->
         raise CustomException(*ORGANISATION_DOES_NOT_EXISTS_EXCEPTION)
 
     # Finding out the file name from given file
-    file_name = ""
+    file_name = get_file_name(uploaded_file=request_schema.uploaded_file)
 
     # validating if file already exists in organisation
     organisation_file_obj = db.query(models.OrganisationFile).filter(
@@ -65,3 +67,10 @@ def upload_file(request_schema: schemas.UploadFileRequestSchema, db: Session) ->
     return schemas.FileSchema(
         id=file_obj.id, file_name=file_obj.file_name, file_path=file_obj.file_path
     )
+
+
+def get_file_name(uploaded_file: UploadFile) -> str:
+    file_name = ""
+    if not file_name:
+        raise CustomException(*UNABLE_TO_PROCESS_FILE)
+    return file_name
