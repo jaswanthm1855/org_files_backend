@@ -29,13 +29,27 @@ class FileSchema(BaseModel):
     file_name: str
     file_path: str
 
+    class Config:
+        orm_mode = True
+
+
+
+class GetOrganisationFilesSchema(OrganisationSchema):
+    files: List[FileSchema]
+
+    class Config:
+        orm_mode = True
+
+
+class GetOrganisationFilesSuccessSchema(BaseResponseSchema):
+    data: List[GetOrganisationFilesSchema]
+
 
 class GetFilesSuccessSchema(BaseResponseSchema):
     data: List[FileSchema]
 
 
 class UploadFileRequestSchema(BaseModel):
-    organisation_id: str
     uploaded_file: UploadFile
     can_replace_file: bool = False
 

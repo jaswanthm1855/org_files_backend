@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker, Session
 from constants.config import env_variables
 
 engine = create_engine(
-    env_variables.DATABASE_URL, echo=env_variables.DB_ECHO, pool_pre_ping=True, pool_recycle=280,
+    env_variables.DATABASE_URL, echo=False, pool_pre_ping=True, pool_recycle=280,
     isolation_level="READ UNCOMMITTED", pool_size=500, max_overflow=100
 )
 
@@ -24,3 +24,17 @@ def get_db_session():
         yield db
     finally:
         db.close()
+
+
+def get_db_session_to_variable() -> Session:
+    """
+    This function will return a db_session
+    that session should be closed manually
+    :param schema:
+    :return:
+    """
+    SessionLocal = sessionmaker(
+        bind=engine, autocommit=False, autoflush=False, expire_on_commit=False)
+    db = SessionLocal()
+    """:type: sqlalchemy.orm.Session"""
+    return db
