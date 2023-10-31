@@ -1,7 +1,7 @@
 import os.path
 import shutil
 from collections import defaultdict
-from typing import List
+from typing import List, Tuple
 
 import magic
 from fastapi import UploadFile
@@ -96,7 +96,7 @@ def upload_file(
     )
 
 
-def get_file_name(uploaded_file: UploadFile) -> str:
+def get_file_name(uploaded_file: UploadFile) -> Tuple[str, str]:
     file_name = uploaded_file.filename
 
     file_uploadable_dir_path = UPLOAD_DIR_BASE_PATH + f"temp/"
