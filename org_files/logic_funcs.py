@@ -72,8 +72,16 @@ def upload_file(
         models.OrganisationFile.organisation_id == organisation_id,
         models.OrganisationFile.file_name == file_name
     ).first()
-    if organisation_file_obj and not request_schema.can_replace_file:
-        raise CustomException(*FILE_ALREADY_EXISTS)
+    if organisation_file_obj:
+        if not request_schema.can_replace_file:
+            raise CustomException(*FILE_ALREADY_EXISTS)
+        else:
+            db.query(models.OrganisationFile).filter(
+                models.OrganisationFile.organisation_id == organisation_id,
+                models.OrganisationFile.file_name == file_name
+            ).delete()
+            db.commit()
+            os.remove(organisation_file_obj.file_path)
 
     file_uploadable_dir_path = UPLOAD_DIR_BASE_PATH + f"{organisation_id}/"
     if not os.path.exists(file_uploadable_dir_path):
